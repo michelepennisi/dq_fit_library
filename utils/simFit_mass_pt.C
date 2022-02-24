@@ -48,7 +48,7 @@ void generate_toy_sample(){
   rooHistDimuPtFromBeauty.plotOn(frameDimuPt,MarkerStyle(24),MarkerColor(kBlue)) ;
 
   // Load pdf for the pT shape
-  gROOT->ProcessLineSync(".x /home/luca/GITHUB/dq_fit_library/fit_library/PtPdf.cxx+") ;
+  gROOT->ProcessLineSync(".x /home/michele_pennisi/dq_fit_library/fit_library/PtPdf.cxx+") ;
 
   // Create pdf for dimu from charm and beauty
   RooWorkspace *w = new RooWorkspace("w", "workspace");
@@ -75,11 +75,11 @@ void generate_toy_sample(){
   pdfDimuPtFromBeauty->plotOn(frameDimuPt,LineStyle(kSolid),LineColor(kBlue)) ;
 
   // Generate the toy samples
-  RooDataSet *dataDimuMassFromCharmAndBeauty = pdfDimuMassFromCharm->generate(m,10000) ;
-  RooDataSet *dataDimuMassFromBeauty = pdfDimuMassFromBeauty->generate(m,1000) ;
+  RooDataSet *dataDimuMassFromCharmAndBeauty = pdfDimuMassFromCharm->generate(m,6400) ;
+  RooDataSet *dataDimuMassFromBeauty = pdfDimuMassFromBeauty->generate(m,6400) ;
 
-  RooDataSet *dataDimuPtFromCharmAndBeauty = pdfDimuPtFromCharm->generate(pt,10000) ;
-  RooDataSet *dataDimuPtFromBeauty = pdfDimuPtFromBeauty->generate(pt,1000) ;
+  RooDataSet *dataDimuPtFromCharmAndBeauty = pdfDimuPtFromCharm->generate(pt,3600) ;
+  RooDataSet *dataDimuPtFromBeauty = pdfDimuPtFromBeauty->generate(pt,3600) ;
 
   // Sum the samples from b and c
   dataDimuMassFromCharmAndBeauty->append(*dataDimuMassFromBeauty);
@@ -98,7 +98,7 @@ void generate_toy_sample(){
 }
 //---------------------------------------------------------------------------------------//
  void simFit_mass_pt(){
-   gROOT->ProcessLineSync(".x /home/luca/GITHUB/dq_fit_library/fit_library/PtPdf.cxx+") ;
+   gROOT->ProcessLineSync(".x /home/michele_pennisi/dq_fit_library/fit_library/PtPdf.cxx+") ;
    TFile *fIn = new TFile("rooWorkspace.root");
    RooWorkspace *w = (RooWorkspace *)fIn->Get("w");
    w->Print();
@@ -127,8 +127,8 @@ void generate_toy_sample(){
    RooAbsPdf *pdfDimuPtFromBeauty = w->pdf("pdfDimuPtFromBeauty");
 
    // Define the normalization from charm and beauty spectra
-   RooRealVar nDimuFromC("nDimuFromC","number dimuon from c",10000,0,2000000) ;
-   RooRealVar nDimuFromB("nDimuFromB","number dimuon from b",10000,0,2000000) ;
+   RooRealVar nDimuFromC("nDimuFromC","number dimuon from c",6400,0,2000000) ; //variabile con un range
+   RooRealVar nDimuFromB("nDimuFromB","number dimuon from b",3600,0,2000000) ;
 
    // Define the model as sum of charm and beauty
    RooAddPdf  m_model("m_model","dimuMassFromC + dimuMassFromB",RooArgList(*pdfDimuMassFromCharm,*pdfDimuMassFromBeauty),RooArgList(nDimuFromC,nDimuFromB)) ;
@@ -166,6 +166,6 @@ void generate_toy_sample(){
 
    TCanvas* canvas = new TCanvas("canvas","canvas",1200,600) ;
    canvas->Divide(2,1);
-   canvas->cd(1) ; gPad->SetLogy(1) ; gPad->SetLeftMargin(0.15) ; m_frame->GetYaxis()->SetTitleOffset(1.4) ; m_frame->Draw() ;
-   canvas->cd(2) ; gPad->SetLogy(1) ; gPad->SetLeftMargin(0.15) ; pt_frame->GetYaxis()->SetTitleOffset(1.4) ; pt_frame->Draw() ;
+   canvas->cd(1) ; gPad->SetLogy(1) ; gPad->SetLeftMargin(0.15) ; m_frame->GetXaxis()->SetTitle("M [GeV/c^{2}]"); m_frame->GetYaxis()->SetTitleOffset(1.4) ; m_frame->Draw() ;
+   canvas->cd(2) ; gPad->SetLogy(1) ; gPad->SetLeftMargin(0.15) ; pt_frame->GetXaxis()->SetTitle("#it{p}_{T} [GeV/c]");pt_frame->GetYaxis()->SetTitleOffset(1.4) ; pt_frame->Draw() ;
 }
